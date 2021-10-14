@@ -17,11 +17,13 @@ class Move_show {
   private:
 
   public:
-    void motor_right_A();
-    void motor_right_B();
-    void motor_left_A();
-    void motor_left_B(); 
-  
+    //Hardware Interrup
+    void IRAM_ATTR isrPinA_R();
+    void IRAM_ATTR isrPinB_R();
+    void IRAM_ATTR isrPinA_L();
+    void IRAM_ATTR isrPinB_L(); 
 };
+
+
 
 #endif

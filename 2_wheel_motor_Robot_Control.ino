@@ -1,9 +1,11 @@
 #include "Motor_move.h"
 
-#define A 34
-#define B 35
-#define C 15
-#define D 4
+volatile int interruptCounter;
+
+const int Right_A =35;
+const int Right_B = 34;
+const int Left_A = 15;
+const int Left_B = 4;
 
 const int motorA1= 23;
 const int motorA2= 19;
@@ -11,15 +13,23 @@ const int motorB1= 18;
 const int motorB2= 5;
 int target = 0;
 
+
 void setup() {
+
   pinMode(motorA1, OUTPUT);
   pinMode(motorA2, OUTPUT);
   pinMode(motorB1, OUTPUT);
   pinMode(motorB2, OUTPUT);
-  pinMode(A, INPUT);
-  pinMode(B, INPUT);
-  pinMode(C, INPUT);
-  pinMode(D, INPUT);
+  
+  pinMode(Right_A, INPUT);
+  pinMode(Right_B, INPUT);
+  pinMode(Left_A, INPUT);
+  pinMode(Left_B, INPUT);
+
+//  attachInterrupt(digitalPinToInterrupt(Right_A), isrPinA_R, CHANGE);
+//  attachInterrupt(digitalPinToInterrupt(Right_B), isrPinB_R, CHANGE);
+//  attachInterrupt(digitalPinToInterrupt(Left_A), isrPinA_L, CHANGE);
+//  attachInterrupt(digitalPinToInterrupt(Left_B), isrPinB_L, CHANGE);
   Serial.begin(9600);
 }
 
