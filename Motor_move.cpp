@@ -14,39 +14,40 @@ const int motorA2= 19;
 const int motorB1= 18;
 const int motorB2= 5;
 
+//motor encoder method
 void IRAM_ATTR Move_show::isrPinA_R() {
   if(digitalRead(Right_A) == 1) {
     if(digitalRead(Right_B) == 0) {
-      R_pos = R_pos -1;
+      R_pos = R_pos +1;
     }
     else {
-      R_pos = R_pos +1;
+      R_pos = R_pos -1;
     }
   }
   else {
     if(digitalRead(Right_B) == 1) {
-      R_pos = R_pos - 1;
+      R_pos = R_pos +1;
     }
     else {
-      R_pos = R_pos +1;
+      R_pos = R_pos -1;
     }
   }
 }
 void IRAM_ATTR Move_show::isrPinB_R() {
   if(digitalRead(Right_B) == 1) {
     if(digitalRead(Right_A) == 1) {
-      R_pos = R_pos -1;
+      R_pos = R_pos +1;
     }
     else {
-      R_pos = R_pos +1;
+      R_pos = R_pos -1;
     }
   }
   else{
     if(digitalRead(Right_A) == 0) {
-      R_pos =R_pos-1;
+      R_pos =R_pos+1;
     }
     else {
-      R_pos =R_pos +1; 
+      R_pos =R_pos -1; 
     }
   }
 }
@@ -54,36 +55,36 @@ void IRAM_ATTR Move_show::isrPinB_R() {
 void IRAM_ATTR Move_show::isrPinA_L() {
   if(digitalRead(Left_A) == 1) {
     if(digitalRead(Left_B) == 0) {
-      L_pos = L_pos -1;
+      L_pos = L_pos +1;
     }
     else {
-      L_pos = L_pos +1;
+      L_pos = L_pos -1;
     }
   }
   else {
     if(digitalRead(Left_B) == 1) {
-      L_pos = L_pos - 1;
+      L_pos = L_pos + 1;
     }
     else {
-      L_pos = L_pos +1;
+      L_pos = L_pos -1;
     }
   }
 }
 void IRAM_ATTR Move_show::isrPinB_L() {
   if(digitalRead(Left_B) == 1) {
     if(digitalRead(Left_A) == 1) {
-      L_pos = L_pos -1;
+      L_pos = L_pos +1;
     }
     else {
-      L_pos = L_pos +1;
+      L_pos = L_pos -1;
     }
   }
   else{
     if(digitalRead(Left_A) == 0) {
-      L_pos =L_pos-1;
+      L_pos =L_pos+1;
     }
     else {
-      L_pos =L_pos +1; 
+      L_pos =L_pos -1; 
     }
   }
 }
