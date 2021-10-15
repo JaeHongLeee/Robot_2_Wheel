@@ -1,8 +1,8 @@
 #include "Motor_move.h"
 #include "Arduino.h"
 
-volatile int R_pos = 0;
-volatile int L_pos = 0;
+int R_pos = 0;
+int L_pos = 0;
 
 const int Right_A =35;
 const int Right_B = 34;
@@ -87,6 +87,13 @@ void IRAM_ATTR Move_show::isrPinB_L() {
     }
   }
 }
+
+void Move_show::motor_show_status() {
+  Serial.print(R_pos);
+  Serial.print("\t");
+  Serial.println(L_pos);
+}
+
 
 //car move method
 void Motor_move::back_move(){

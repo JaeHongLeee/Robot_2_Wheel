@@ -21,9 +21,15 @@ class Move_show {
     void IRAM_ATTR isrPinA_R();
     void IRAM_ATTR isrPinB_R();
     void IRAM_ATTR isrPinA_L();
-    void IRAM_ATTR isrPinB_L(); 
+    void IRAM_ATTR isrPinB_L();
+    void motor_show_status(); 
 };
 
-
-
+/*
+//Interrupt class
+class Interrupt {
+  public:
+    void Hardware(int pin1, int pin2, int pin3, int pin4); 
+};
+*/
 #endif
