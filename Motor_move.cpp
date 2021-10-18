@@ -15,6 +15,7 @@ const int motorB1= 18;
 const int motorB2= 5;
 
 //motor encoder method
+//Hardware Interrupt
 void IRAM_ATTR Move_show::isrPinA_R() {
   if(digitalRead(Right_A) == 1) {
     if(digitalRead(Right_B) == 0) {
@@ -88,6 +89,7 @@ void IRAM_ATTR Move_show::isrPinB_L() {
     }
   }
 }
+
 
 void Move_show::motor_show_status() {
   Serial.print(R_pos);

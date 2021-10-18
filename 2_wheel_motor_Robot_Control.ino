@@ -1,4 +1,5 @@
 #include "Motor_move.h"
+#define CONTROL_PERIOD 50000 //50ms
 
 const int Right_A =35;
 const int Right_B = 34;
@@ -15,6 +16,21 @@ Move_show encoder_RA;
 Move_show encoder_RB;
 Move_show encoder_LA;
 Move_show encoder_LB;
+
+//Timer Interrupt
+volatile bool interruptCounter = false;
+hw_timer_t*timer = NULL;
+
+void IRAM_ATTR onTimer() {
+  interruptCounter = true;
+}
+
+void interrupt_init(){
+  timer - timerBegin(0, 80, true);
+  timerAttachInterrupt(timer, &onTimer, true);
+  timerAlarmWrite(timer, CONTROL_PERIOD, true);
+  timerAlarmEnable(timer);
+}
 
 void setup() {
 
