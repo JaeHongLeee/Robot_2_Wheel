@@ -18,11 +18,14 @@ Move_show encoder_LA;
 Move_show encoder_LB;
 
 //Timer Interrupt
-volatile bool interruptCounter = false;
-hw_timer_t*timer = NULL;
+//volatile bool interruptCounter = false;
+portMUX_TYPE timerMux0 = portMUX_INITIALIZER_UNLOCKED;
+hw_timer_t * timer = NULL;
 
 void IRAM_ATTR onTimer() {
-  interruptCounter = true;
+  portENTER_CRITICAL_ISR(&timerMux0);
+  portEXIT_CRITICAL_ISR(&timerMux0);
+
 }
 
 void interrupt_init(){
