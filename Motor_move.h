@@ -10,6 +10,9 @@ class Motor_move {
     //car move method
     void forward_move();
     void back_move();
+
+    //PWM move method
+    
 };
 
 //Interrupt Class
@@ -23,15 +26,16 @@ class InterruptLibrary {
     void IRAM_ATTR isrPinA_L();
     void IRAM_ATTR isrPinB_L();
 
-    void interrupt_setup();
+    //Timer Interrupt
+    void interrupt_setup();    
 };
 
 //Move Show Class
 class Move_show {
    
    public: 
-    void motor_show_status(); 
+    void motor_show_status();
+    void speed_status();
     
 };
-
 #endif
