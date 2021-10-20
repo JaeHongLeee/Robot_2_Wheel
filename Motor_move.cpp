@@ -1,8 +1,17 @@
 #include "Motor_move.h"
 #include "Arduino.h"
+#define CONTROL_PERIOD 50000 //50ms
 
-int R_pos = 0;
-int L_pos = 0;
+volatile int R_pos = 0;
+volatile int L_pos = 0;
+volatile int R_old_pos = 0;
+volatile int L_old_pos = 0;
+volatile int R_current_speed = 0;
+volatile int L_current_speed = 0;
+//volatile int desired_speed = 0;
+
+//Timer Interrupt vars
+hw_timer_t * timer = NULL;
 
 const int Right_A =35;
 const int Right_B = 34;
@@ -14,9 +23,9 @@ const int motorA2= 19;
 const int motorB1= 18;
 const int motorB2= 5;
 
-//motor encoder method
-//Hardware Interrupt
-void IRAM_ATTR Move_show::isrPinA_R() {
+/*motor encoder method
+Hardware Interrupt*/
+void IRAM_ATTR InterruptLibrary::isrPinA_R() {
   if(digitalRead(Right_A) == 1) {
     if(digitalRead(Right_B) == 0) {
       R_pos = R_pos +1;
@@ -34,7 +43,7 @@ void IRAM_ATTR Move_show::isrPinA_R() {
     }
   }
 }
-void IRAM_ATTR Move_show::isrPinB_R() {
+void IRAM_ATTR InterruptLibrary::isrPinB_R() {
   if(digitalRead(Right_B) == 1) {
     if(digitalRead(Right_A) == 1) {
       R_pos = R_pos +1;
@@ -53,7 +62,7 @@ void IRAM_ATTR Move_show::isrPinB_R() {
   }
 }
 
-void IRAM_ATTR Move_show::isrPinA_L() {
+void IRAM_ATTR InterruptLibrary::isrPinA_L() {
   if(digitalRead(Left_A) == 1) {
     if(digitalRead(Left_B) == 0) {
       L_pos = L_pos +1;
@@ -71,7 +80,7 @@ void IRAM_ATTR Move_show::isrPinA_L() {
     }
   }
 }
-void IRAM_ATTR Move_show::isrPinB_L() {
+void IRAM_ATTR InterruptLibrary::isrPinB_L() {
   if(digitalRead(Left_B) == 1) {
     if(digitalRead(Left_A) == 1) {
       L_pos = L_pos +1;
@@ -90,7 +99,22 @@ void IRAM_ATTR Move_show::isrPinB_L() {
   }
 }
 
+//Timer Interrupt
+void IRAM_ATTR onTimer() {
+  R_current_speed = R_pos - R_old_pos;
+  L_current_speed = L_pos - L_old_pos;
+  R_old_pos = R_pos;
+  L_old_pos = L_pos;
+}
 
+void InterruptLibrary::interrupt_setup(){
+  timer = timerBegin(0, 80, true);
+  timerAttachInterrupt(timer, &onTimer, true);
+  timerAlarmWrite(timer, CONTROL_PERIOD, true);
+  timerAlarmEnable(timer);
+}
+
+//Motor Show method
 void Move_show::motor_show_status() {
   Serial.print(R_pos);
   Serial.print("\t");

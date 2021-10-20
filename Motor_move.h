@@ -7,30 +7,31 @@ class Motor_move {
   private:
   
   public:
-    //car move methodnm
+    //car move method
     void forward_move();
     void back_move();
 };
 
-//Move show class
-class Move_show {
+//Interrupt Class
+class InterruptLibrary {
   private:
-
+ 
   public:
-    //Hardware Interrup
+    //Hardware Interrupt
     void IRAM_ATTR isrPinA_R();
     void IRAM_ATTR isrPinB_R();
     void IRAM_ATTR isrPinA_L();
     void IRAM_ATTR isrPinB_L();
+
+    void interrupt_setup();
+};
+
+//Move Show Class
+class Move_show {
+   
+   public: 
     void motor_show_status(); 
     
 };
 
-/*
-//Interrupt class
-class Interrupt {
-  public:
-    void Hardware(int pin1, int pin2, int pin3, int pin4); 
-};
-*/
 #endif
