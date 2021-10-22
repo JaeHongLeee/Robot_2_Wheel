@@ -1,4 +1,3 @@
-
 #include "Motor_move.h"
 #define CONTROL_PERIOD 50000 //50ms
 
@@ -14,8 +13,8 @@
 #define motorB2 5
 
 //PWM Channel Setting
-const int freq = 5000;
-const int resolution = 8;
+#define LEDC_TIMER_13_BIT 13        //13bit,   2^13-1 = calculate duty 8191
+#define LEDC_BASE_FREQ 5000
 
 //encoder setting
 InterruptLibrary encoder_RA;
@@ -44,15 +43,14 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(Left_B), [](){encoder_LB.isrPinB_L(); }, CHANGE);
 
   //PWM pin Setting
+  ledcSetup(0, LEDC_BASE_FREQ, LEDC_TIMER_13_BIT);
   ledcAttachPin(motorB2, 0);
+  ledcSetup(1, LEDC_BASE_FREQ, LEDC_TIMER_13_BIT);
   ledcAttachPin(motorB1, 1);
+  ledcSetup(2, LEDC_BASE_FREQ, LEDC_TIMER_13_BIT);
   ledcAttachPin(motorA2, 2);
+  ledcSetup(3, LEDC_BASE_FREQ, LEDC_TIMER_13_BIT);
   ledcAttachPin(motorA1, 3);
- 
-  ledcSetup(0, freq, resolution);
-  ledcSetup(1, freq, resolution);
-  ledcSetup(2, freq, resolution);
-  ledcSetup(3, freq, resolution);
   
   timer_1.interrupt_setup();      //Timer Interrupt
   
