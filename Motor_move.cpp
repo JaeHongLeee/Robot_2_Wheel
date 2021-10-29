@@ -52,13 +52,13 @@ volatile int target = 0;
 //Right PWM
 volatile int R_PWM;
 volatile int R_PWM_Input;
-int R_duty_min = 5500;    //Dead Zone
+int R_duty_min = 4400;    //Dead Zone
 int R_duty_max = 8191;    //Max PWM 
 
 //Left PWM
 volatile int L_PWM;
 volatile int L_PWM_Input;
-int L_duty_min = 5000  ;   //Dead Zone
+int L_duty_min = 4500  ;   //Dead Zone
 int L_duty_max = 8191;    //Max PWM
 
 //Timer Interrupt vars
