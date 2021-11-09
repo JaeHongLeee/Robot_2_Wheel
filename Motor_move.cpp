@@ -30,11 +30,11 @@ volatile double L_P_control, L_I_control, L_D_control;
 volatile double L_PID_control;
 
 //PID Gain Values
-double R_Kp = 1;
+double R_Kp = 3;
 double R_Ki = 0;
 double R_Kd = 0;
 
-double L_Kp = 1;
+double L_Kp = 3;
 double L_Ki = 0;
 double L_Kd = 0;
 
@@ -52,17 +52,24 @@ volatile int target = 0;
 //Right PWM
 volatile int R_PWM;
 volatile int R_PWM_Input;
-int R_duty_min = 4400;    //Dead Zone
+int R_duty_min = 5550;    //Dead Zone
 int R_duty_max = 8191;    //Max PWM 
 
 //Left PWM
 volatile int L_PWM;
 volatile int L_PWM_Input;
-int L_duty_min = 4500  ;   //Dead Zone
+int L_duty_min = 5750  ;   //Dead Zone
 int L_duty_max = 8191;    //Max PWM
 
 //Timer Interrupt vars
 hw_timer_t * timer = NULL;
+
+volatile int R_PID_Error = 1;
+volatile int L_PID_Error = 1;
+volatile int R_station = 0;
+volatile int L_station = 0;
+volatile int R_clamping = 1;
+volatile int L_clamping = 1;
 
 /*****************motor encoder method**************/
 //Hardware Interrupt
@@ -163,6 +170,33 @@ void IRAM_ATTR onTimer() {
   L_old_error = L_error;
   L_PID_control = (L_P_control + L_I_control + L_D_control);
 
+  //Clamping 
+  if (R_PID_control * R_error >0) {
+    R_PID_Error =1;
+  }
+  else {
+    R_PID_Error = 0;
+  }
+
+  if(L_PID_control * L_error >0) {
+    L_PID_Error = 1;
+  }
+  else {
+    L_PID_Error = 0;
+  }
+
+  //anti-wideup
+  if(R_PID_Error * R_station == 1) {
+    R_clamping = 0;
+  } else {
+    R_clamping = 1;
+  }
+
+  if(L_PID_Error * L_station == 1) {
+    L_clamping = 0;
+  } else {
+    L_clamping = 1;
+  }
 
   //InPWM Setting
   if(target_speed >= 0){
@@ -177,12 +211,12 @@ void IRAM_ATTR onTimer() {
   else if(target_speed < 0){
     R_PID_control= constrain(R_PID_control, 1, R_duty_max);
     R_PID_control=-R_PID_control;
-    R_PWM= map(R_PID_control, -8191, -1, R_duty_min, R_duty_max);
+    R_PWM= map(R_PID_control, -1, -8191, R_duty_min, R_duty_max);
     R_PWM_Input=R_PWM;
 
     L_PID_control= constrain(L_PID_control, 1, L_duty_max);
     L_PID_control=-L_PID_control;
-    L_PWM= map(L_PID_control, -8191, -1, L_duty_min, L_duty_max);
+    L_PWM= map(L_PID_control, -1, -8191, L_duty_min, L_duty_max);
     L_PWM_Input=L_PWM;
   }
 
@@ -234,10 +268,10 @@ void Move_show::speed_status() {
 void Move_show::motor_show_status() {
   Serial.print(target_speed);
   Serial.print("\t");
-  Serial.print(R_pos);
-  Serial.print("\t");
-  Serial.print(L_pos);
-  Serial.print("\t");
+  //Serial.print(R_pos);
+  //Serial.print("\t");
+  //Serial.print(L_pos);
+  //Serial.print("\t");
   Serial.print(R_current_speed);
   Serial.print("\t");
   Serial.println(L_current_speed);
