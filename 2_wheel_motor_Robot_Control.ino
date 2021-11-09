@@ -54,7 +54,7 @@ void setup() {
   
   timer_1.interrupt_setup();      //Timer Interrupt
   
-  Serial.begin(115200);
+  Serial.begin(74880);
 }
 
 void loop() {

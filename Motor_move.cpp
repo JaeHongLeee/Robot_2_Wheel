@@ -30,11 +30,11 @@ volatile double L_P_control, L_I_control, L_D_control;
 volatile double L_PID_control;
 
 //PID Gain Values
-double R_Kp = 3;
+double R_Kp = 6;
 double R_Ki = 0;
 double R_Kd = 0;
 
-double L_Kp = 3;
+double L_Kp = 2;
 double L_Ki = 0;
 double L_Kd = 0;
 
@@ -52,7 +52,7 @@ volatile int target = 0;
 //Right PWM
 volatile int R_PWM;
 volatile int R_PWM_Input;
-int R_duty_min = 5550;    //Dead Zone
+int R_duty_min = 5600;    //Dead Zone
 int R_duty_max = 8191;    //Max PWM 
 
 //Left PWM
@@ -156,20 +156,24 @@ void IRAM_ATTR onTimer() {
   L_old_pos = L_pos;
 
   //PID Control 
-  R_error = target_speed - R_current_speed;
-  R_P_control = R_Kp * R_error;
-  R_I_control += R_Ki*R_error;
-  R_D_control = R_Kd*(R_error-R_old_error);
-  R_old_error = R_error;
-  R_PID_control = (R_P_control + R_I_control + R_D_control);
-
-  L_error = target_speed - L_current_speed;
-  L_P_control = L_Kp * L_error;
-  L_I_control += L_Ki*L_error;
-  L_D_control = L_Kd*(L_error-L_old_error);
-  L_old_error = L_error;
-  L_PID_control = (L_P_control + L_I_control + L_D_control);
-
+  if(target_speed<0) {
+    target_speed = -target_speed;
+  }
+  
+   R_error = target_speed - R_current_speed;
+   R_P_control = R_Kp * R_error;
+   R_I_control += (R_clamping*R_Ki*R_error);
+   R_D_control = R_Kd*(R_error-R_old_error);
+   R_old_error = R_error;
+   R_PID_control = (R_P_control + R_I_control + R_D_control);
+  
+   L_error = target_speed - L_current_speed;
+   L_P_control = L_Kp * L_error;
+   L_I_control += (L_clamping*L_Ki*L_error);
+   L_D_control = L_Kd*(L_error-L_old_error);
+   L_old_error = L_error;
+   L_PID_control = (L_P_control + L_I_control + L_D_control);
+  
   //Clamping 
   if (R_PID_control * R_error >0) {
     R_PID_Error =1;
@@ -201,20 +205,24 @@ void IRAM_ATTR onTimer() {
   //InPWM Setting
   if(target_speed >= 0){
     R_PID_control= constrain(R_PID_control, 0 , R_duty_max);
+    R_PID_control=map(target_speed, 120, 290, 0, 8191);
     R_PWM=map(R_PID_control, 0, 8191, R_duty_min, R_duty_max);
     R_PWM_Input=R_PWM;
 
     L_PID_control= constrain(L_PID_control, 0, L_duty_max);
+    L_PID_control= map(target_speed, 120, 290, 0, 8191);
     L_PWM=map(L_PID_control, 0, 8191, L_duty_min, L_duty_max);
     L_PWM_Input=L_PWM;
   }
   else if(target_speed < 0){
-    R_PID_control= constrain(R_PID_control, 1, R_duty_max);
+    R_PID_control= constrain(R_PID_control, 0, R_duty_max);
+    R_PID_control= map(target_speed, 120, 290, 0, 8191);
     R_PID_control=-R_PID_control;
     R_PWM= map(R_PID_control, -1, -8191, R_duty_min, R_duty_max);
     R_PWM_Input=R_PWM;
 
-    L_PID_control= constrain(L_PID_control, 1, L_duty_max);
+    L_PID_control= constrain(L_PID_control, 0, L_duty_max);
+    L_PID_control= map(target_speed, 120, 290, 0, 8191);
     L_PID_control=-L_PID_control;
     L_PWM= map(L_PID_control, -1, -8191, L_duty_min, L_duty_max);
     L_PWM_Input=L_PWM;
@@ -266,31 +274,29 @@ void Move_show::speed_status() {
 
 //Motor Show method
 void Move_show::motor_show_status() {
-  Serial.print(target_speed);
-  Serial.print("\t");
+  if(target > 0){
+    Serial.print(target_speed);
+    Serial.print("\t");
+  }
+  else if(target <0){
+    Serial.print(-target_speed);
+    Serial.print("\t");
+  }
+  else {
+    Serial.print(target_speed);
+    Serial.print("\t");
+  }
   //Serial.print(R_pos);
   //Serial.print("\t");
   //Serial.print(L_pos);
   //Serial.print("\t");
+  Serial.print("R SPEED: ");
   Serial.print(R_current_speed);
   Serial.print("\t");
+  Serial.print("L_SPEED: ");
   Serial.println(L_current_speed);
 }
 
 
-//car move method
-void Motor_move::back_move(){
-  digitalWrite(motorA1, HIGH);
-  digitalWrite(motorA2, LOW);
-  digitalWrite(motorB1, HIGH);
-  digitalWrite(motorB2, LOW);
-}
-
-void Motor_move::forward_move() {
-  digitalWrite(motorA1, LOW);
-  digitalWrite(motorA2, HIGH);
-  digitalWrite(motorB1, LOW);
-  digitalWrite(motorB2, HIGH);
-} 
 
 Motor_move New;
