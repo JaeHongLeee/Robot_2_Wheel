@@ -1,5 +1,8 @@
+#include <MPU9250_asukiaaa.h> //IMUsensor library
+
 #ifndef Motor_move_h
 #define Motor_move_h
+
 #include "Arduino.h"
 
 //Motor move class
@@ -29,6 +32,10 @@ class InterruptLibrary {
     //Timer Interrupt
     void interrupt_setup();    
 };
+
+//I2Cbus Class
+
+
 
 //Move Show Class
 class Move_show {

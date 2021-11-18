@@ -1,4 +1,6 @@
+#include <MPU9250_asukiaaa.h> //IMUsensor library
 #include "Motor_move.h"
+
 #define CONTROL_PERIOD 50000 //50ms
 
 //Pin number setting
@@ -12,6 +14,10 @@
 #define motorB1 18
 #define motorB2 5
 
+//IMU PIN number setting
+#define SDA_PIN 21
+#define SCL_PIN 22
+
 //PWM Channel Setting
 #define LEDC_TIMER_13_BIT 13        //13bit,   2^13-1 = calculate duty 8191
 #define LEDC_BASE_FREQ 5000
@@ -21,6 +27,10 @@ InterruptLibrary encoder_RA;
 InterruptLibrary encoder_RB;
 InterruptLibrary encoder_LA;
 InterruptLibrary encoder_LB;
+
+//IMUsensor setting
+MPU9250_asukiaaa mySensor;
+
 
 //Setup method
 void setup() {

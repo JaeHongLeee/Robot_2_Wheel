@@ -1,3 +1,5 @@
+#include <MPU9250_asukiaaa.h> //IMUsensor library
+
 #include "Motor_move.h"
 #include "Arduino.h"
 #define CONTROL_PERIOD 50000 //50ms
@@ -31,11 +33,11 @@ volatile double L_PID_control;
 
 //PID Gain Values
 double R_Kp = 6;
-double R_Ki = 0;
+double R_Ki = 3;
 double R_Kd = 0;
 
-double L_Kp = 2;
-double L_Ki = 0;
+double L_Kp = 4;
+double L_Ki = 3;
 double L_Kd = 0;
 
 //Position, Speed Setting
@@ -261,6 +263,20 @@ void InterruptLibrary::interrupt_setup(){
   timerAlarmWrite(timer, CONTROL_PERIOD, true);
   timerAlarmEnable(timer);
 }
+
+
+
+
+
+
+/****************IMU Sensor************************/
+
+
+
+
+
+
+
 
 //Motor Speed Input Method
 void Move_show::speed_status() {
