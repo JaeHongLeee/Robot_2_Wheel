@@ -1,4 +1,4 @@
-#include <MPU9250_asukiaaa.h> //IMUsensor library
+#include "MPU9250_asukiaaa.h" //IMUsensor library
 
 #ifndef Motor_move_h
 #define Motor_move_h
@@ -33,8 +33,13 @@ class InterruptLibrary {
     void interrupt_setup();    
 };
 
-//I2Cbus Class
-
+//IMU Sensor show class
+class IMU_sensor_show {
+  public:
+    void accel_show();
+    void mag_show();
+  
+};
 
 
 //Move Show Class

@@ -1,4 +1,4 @@
-#include <MPU9250_asukiaaa.h> //IMUsensor library
+#include "MPU9250_asukiaaa.h" //IMUsensor library
 #include "Motor_move.h"
 
 #define CONTROL_PERIOD 50000 //50ms
@@ -27,10 +27,6 @@ InterruptLibrary encoder_RA;
 InterruptLibrary encoder_RB;
 InterruptLibrary encoder_LA;
 InterruptLibrary encoder_LB;
-
-//IMUsensor setting
-MPU9250_asukiaaa mySensor;
-
 
 //Setup method
 void setup() {
@@ -63,7 +59,13 @@ void setup() {
   ledcAttachPin(motorA1, 3);
   
   timer_1.interrupt_setup();      //Timer Interrupt
-  
+
+  //IMUsensor setting
+  #ifdef _ESP32_HAL_I2C_H_
+  Wire.begin(SDA_PIN, SCL_PIN);
+  #else
+  Wire.begin();
+  #endif
   Serial.begin(74880);
 }
 
@@ -71,8 +73,16 @@ void loop() {
   Move_show show1;
   Move_show motor_input;
 
-  motor_input.speed_status();
-  show1.motor_show_status();
+  MPU9250_asukiaaa mySensor;  //IMUsensor setting
+  IMU_sensor_show mySensor2;
+
+  //IMU 센서 받아오는 여기 부분 수정 필요
+  mySensor.accelUpdate();
+  mySensor2.accel_show();
+  mySensor.magUpdate();
+  mySensor2.mag_show();
+  //motor_input.speed_status();
+  //show1.motor_show_status();
   
  
 }

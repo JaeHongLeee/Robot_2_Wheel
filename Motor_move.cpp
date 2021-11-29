@@ -1,4 +1,4 @@
-#include <MPU9250_asukiaaa.h> //IMUsensor library
+#include "MPU9250_asukiaaa.h" //IMUsensor library
 
 #include "Motor_move.h"
 #include "Arduino.h"
@@ -93,7 +93,7 @@ void IRAM_ATTR InterruptLibrary::isrPinA_R() {
     }
   }
 }
-void IRAM_ATTR InterruptLibrary::isrPinB_R() {
+void InterruptLibrary::isrPinB_R() {
   if(digitalRead(Right_B) == 1) {
     if(digitalRead(Right_A) == 1) {
       R_pos = R_pos +1;
@@ -267,16 +267,30 @@ void InterruptLibrary::interrupt_setup(){
 
 
 
-
-
 /****************IMU Sensor************************/
+MPU9250_asukiaaa mySensor;
 
+void IMU_sensor_show::accel_show(){
+  Serial.print("accelX: " + String(mySensor.accelX()));
+  Serial.print("/t");
+  Serial.print("accelY: " + String(mySensor.accelY()));
+  Serial.print("/t");  
+  Serial.print("accelZ: " + String(mySensor.accelZ()));
+  Serial.print("/t");
+  Serial.print("accelSqrt: " + String(mySensor.accelSqrt()));
+  Serial.print("/t");
+}
 
+void IMU_sensor_show::mag_show(){
+  Serial.print("magX: " + String(mySensor.magX()));
+  Serial.print("/t");
+  Serial.print("magY: " + String(mySensor.magY()));
+  Serial.print("/t");  
+  Serial.print("magZ: " + String(mySensor.magZ()));
+  Serial.print("/t");
+  Serial.println("accelSqrt: " + String(mySensor.magHorizDirection()));
 
-
-
-
-
+}
 
 //Motor Speed Input Method
 void Move_show::speed_status() {
@@ -310,7 +324,8 @@ void Move_show::motor_show_status() {
   Serial.print(R_current_speed);
   Serial.print("\t");
   Serial.print("L_SPEED: ");
-  Serial.println(L_current_speed);
+  Serial.print(L_current_speed);
+  Serial.print("\t");
 }
 
 
