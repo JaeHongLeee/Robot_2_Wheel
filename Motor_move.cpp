@@ -32,12 +32,12 @@ volatile double L_P_control, L_I_control, L_D_control;
 volatile double L_PID_control;
 
 //PID Gain Values
-double R_Kp = 6;
-double R_Ki = 3;
+double R_Kp = 1;
+double R_Ki = 0;
 double R_Kd = 0;
 
-double L_Kp = 4;
-double L_Ki = 3;
+double L_Kp = 1;
+double L_Ki = 0;
 double L_Kd = 0;
 
 //Position, Speed Setting
@@ -207,24 +207,20 @@ void IRAM_ATTR onTimer() {
   //InPWM Setting
   if(target_speed >= 0){
     R_PID_control= constrain(R_PID_control, 0 , R_duty_max);
-    R_PID_control=map(target_speed, 120, 290, 0, 8191);
     R_PWM=map(R_PID_control, 0, 8191, R_duty_min, R_duty_max);
     R_PWM_Input=R_PWM;
 
     L_PID_control= constrain(L_PID_control, 0, L_duty_max);
-    L_PID_control= map(target_speed, 120, 290, 0, 8191);
     L_PWM=map(L_PID_control, 0, 8191, L_duty_min, L_duty_max);
     L_PWM_Input=L_PWM;
   }
   else if(target_speed < 0){
     R_PID_control= constrain(R_PID_control, 0, R_duty_max);
-    R_PID_control= map(target_speed, 120, 290, 0, 8191);
     R_PID_control=-R_PID_control;
     R_PWM= map(R_PID_control, -1, -8191, R_duty_min, R_duty_max);
     R_PWM_Input=R_PWM;
 
     L_PID_control= constrain(L_PID_control, 0, L_duty_max);
-    L_PID_control= map(target_speed, 120, 290, 0, 8191);
     L_PID_control=-L_PID_control;
     L_PWM= map(L_PID_control, -1, -8191, L_duty_min, L_duty_max);
     L_PWM_Input=L_PWM;
@@ -321,11 +317,10 @@ void Move_show::motor_show_status() {
   //Serial.print(L_pos);
   //Serial.print("\t");
   Serial.print("R SPEED: ");
-  Serial.print(R_current_speed);
-  Serial.print("\t");
-  Serial.print("L_SPEED: ");
-  Serial.print(L_current_speed);
-  Serial.print("\t");
+  Serial.println(R_current_speed);
+  //Serial.print("\t");
+  //Serial.print("L_SPEED: ");
+  //Serial.println(L_current_speed);
 }
 
 

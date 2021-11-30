@@ -77,12 +77,12 @@ void loop() {
   IMU_sensor_show mySensor2;
 
   //IMU 센서 받아오는 여기 부분 수정 필요
-  mySensor.accelUpdate();
-  mySensor2.accel_show();
-  mySensor.magUpdate();
-  mySensor2.mag_show();
-  //motor_input.speed_status();
-  //show1.motor_show_status();
+  //mySensor.accelUpdate();
+  //mySensor2.accel_show();
+  //mySensor.magUpdate();
+  //mySensor2.mag_show();
+  motor_input.speed_status();
+  show1.motor_show_status();
   
  
 }
