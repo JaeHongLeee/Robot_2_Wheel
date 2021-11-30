@@ -32,8 +32,8 @@ volatile double L_P_control, L_I_control, L_D_control;
 volatile double L_PID_control;
 
 //PID Gain Values
-double R_Kp = 1;
-double R_Ki = 0;
+double R_Kp = 8;
+double R_Ki = 3;
 double R_Kd = 0;
 
 double L_Kp = 1;
@@ -104,7 +104,7 @@ void InterruptLibrary::isrPinB_R() {
   }
   else{
     if(digitalRead(Right_A) == 0) {
-      R_pos =R_pos+1;
+      R_pos =R_pos +1;
     }
     else {
       R_pos =R_pos -1; 
@@ -123,7 +123,7 @@ void IRAM_ATTR InterruptLibrary::isrPinA_L() {
   }
   else {
     if(digitalRead(Left_B) == 1) {
-      L_pos = L_pos + 1;
+      L_pos = L_pos +1;
     }
     else {
       L_pos = L_pos -1;
@@ -141,7 +141,7 @@ void IRAM_ATTR InterruptLibrary::isrPinB_L() {
   }
   else{
     if(digitalRead(Left_A) == 0) {
-      L_pos =L_pos+1;
+      L_pos =L_pos +1;
     }
     else {
       L_pos =L_pos -1; 
@@ -204,20 +204,23 @@ void IRAM_ATTR onTimer() {
     L_clamping = 1;
   }
 
+  //모터 최고 속도: 290, 최저 속도: 120
   //InPWM Setting
   if(target_speed >= 0){
-    R_PID_control= constrain(R_PID_control, 0 , R_duty_max);
-    R_PWM=map(R_PID_control, 0, 8191, R_duty_min, R_duty_max);
+    R_PID_control= constrain(R_PID_control, 0, R_duty_max);
+    R_PWM=map(R_PID_control, 120, 290, R_duty_min, R_duty_max); 
     R_PWM_Input=R_PWM;
 
     L_PID_control= constrain(L_PID_control, 0, L_duty_max);
-    L_PWM=map(L_PID_control, 0, 8191, L_duty_min, L_duty_max);
+    L_PWM=map(L_PID_control, 120, 290, L_duty_min, L_duty_max);
     L_PWM_Input=L_PWM;
   }
+
+  //뒤로 가는 부분 이상함.
   else if(target_speed < 0){
     R_PID_control= constrain(R_PID_control, 0, R_duty_max);
     R_PID_control=-R_PID_control;
-    R_PWM= map(R_PID_control, -1, -8191, R_duty_min, R_duty_max);
+    R_PWM= map(R_PID_control, -120, -290, R_duty_min, R_duty_max);
     R_PWM_Input=R_PWM;
 
     L_PID_control= constrain(L_PID_control, 0, L_duty_max);
