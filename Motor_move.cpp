@@ -32,8 +32,8 @@ volatile double L_P_control, L_I_control, L_D_control;
 volatile double L_PID_control;
 
 //PID Gain Values
-double R_Kp = 8;
-double R_Ki = 3;
+double R_Kp = 3;
+double R_Ki = 1;
 double R_Kd = 0;
 
 double L_Kp = 1;
@@ -156,25 +156,20 @@ void IRAM_ATTR onTimer() {
   L_current_speed = L_pos - L_old_pos;
   R_old_pos = R_pos;
   L_old_pos = L_pos;
-
-  //PID Control 
-  if(target_speed<0) {
-    target_speed = -target_speed;
-  }
   
-   R_error = target_speed - R_current_speed;
-   R_P_control = R_Kp * R_error;
-   R_I_control += (R_clamping*R_Ki*R_error);
-   R_D_control = R_Kd*(R_error-R_old_error);
-   R_old_error = R_error;
-   R_PID_control = (R_P_control + R_I_control + R_D_control);
+  R_error = target_speed - R_current_speed;
+  R_P_control = R_Kp * R_error;
+  R_I_control += (R_clamping*R_Ki*R_error);
+  R_D_control = R_Kd*(R_error-R_old_error);
+  R_old_error = R_error;
+  R_PID_control = (R_P_control + R_I_control + R_D_control);
   
-   L_error = target_speed - L_current_speed;
-   L_P_control = L_Kp * L_error;
-   L_I_control += (L_clamping*L_Ki*L_error);
-   L_D_control = L_Kd*(L_error-L_old_error);
-   L_old_error = L_error;
-   L_PID_control = (L_P_control + L_I_control + L_D_control);
+  L_error = target_speed - L_current_speed;
+  L_P_control = L_Kp * L_error;
+  L_I_control += (L_clamping*L_Ki*L_error);
+  L_D_control = L_Kd*(L_error-L_old_error);
+  L_old_error = L_error;
+  L_PID_control = (L_P_control + L_I_control + L_D_control);
   
   //Clamping 
   if (R_PID_control * R_error >0) {
@@ -225,9 +220,9 @@ void IRAM_ATTR onTimer() {
 
     L_PID_control= constrain(L_PID_control, 0, L_duty_max);
     L_PID_control=-L_PID_control;
-    L_PWM= map(L_PID_control, -1, -8191, L_duty_min, L_duty_max);
+    L_PWM= map(L_PID_control, -290, -120, L_duty_min, L_duty_max);
     L_PWM_Input=L_PWM;
-  }
+  } 
 
   //Motor Move InPWM Input
   if(target > 0) {
