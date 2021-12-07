@@ -79,6 +79,7 @@ void setup() {
 
   IMUsensor.beginAccel();
   IMUsensor.beginMag();
+  IMUsensor.beginGyro();
 
   //Offset setting error value
   IMUsensor.magXOffset = 66;
@@ -108,6 +109,15 @@ void loop() {
   Serial.print("accelSqrt: " + String(IMUsensor.accelSqrt()));
   Serial.println("\t");
   */
+
+  IMUsensor.gyroUpdate();
+  Serial.print("gyroX: " + String(IMUsensor.gyroX()));
+  Serial.print("\t");
+  Serial.print("gyroY: " + String(IMUsensor.gyroY()));
+  Serial.print("\t");  
+  Serial.print("gyroZ: " + String(IMUsensor.gyroZ()));
+  Serial.println("\t");
+ 
   IMUsensor.magUpdate();
   Serial.print("magX: " + String(IMUsensor.magX()));
   Serial.print("\t");
