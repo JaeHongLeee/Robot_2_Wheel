@@ -1,5 +1,4 @@
-#include "MPU9250_asukiaaa.h" //IMUsensor library
-
+#include <MPU9250_asukiaaa.h> //IMUsensor library
 #include "Motor_move.h"
 #include "Arduino.h"
 #define CONTROL_PERIOD 50000 //50ms
@@ -18,6 +17,12 @@
 //PWM Setting
 #define LEDC_TIMER_13_BIT 13
 #define LEDC_BASE_FREQ 5000
+
+//IMU Setting
+#ifdef _ESP32_HAL_I2C_H_
+#define SDA_PIN 21
+#define SCL_PIN 22
+#endif
 
 //PID Control Error Setting
 volatile double R_error = 0;
@@ -211,7 +216,7 @@ void IRAM_ATTR onTimer() {
     L_PWM_Input=L_PWM;
   }
 
-  //뒤로 가는 부분 이상함.
+  //뒤로 가는 부분 이상함.수정 필요.
   else if(target_speed < 0){
     R_PID_control= constrain(R_PID_control, 0, R_duty_max);
     R_PID_control=-R_PID_control;
@@ -262,29 +267,31 @@ void InterruptLibrary::interrupt_setup(){
 
 
 /****************IMU Sensor************************/
-MPU9250_asukiaaa mySensor;
+/*MPU9250_asukiaaa IMUsensor;
 
 void IMU_sensor_show::accel_show(){
-  Serial.print("accelX: " + String(mySensor.accelX()));
-  Serial.print("/t");
-  Serial.print("accelY: " + String(mySensor.accelY()));
-  Serial.print("/t");  
-  Serial.print("accelZ: " + String(mySensor.accelZ()));
-  Serial.print("/t");
-  Serial.print("accelSqrt: " + String(mySensor.accelSqrt()));
-  Serial.print("/t");
+  IMUsensor.accelUpdate();
+  Serial.print("accelX: " + String(IMUsensor.accelX()));
+  Serial.print("\t");
+  Serial.print("accelY: " + String(IMUsensor.accelY()));
+  Serial.print("\t");  
+  Serial.print("accelZ: " + String(IMUsensor.accelZ()));
+  Serial.print("\t");
+  Serial.print("accelSqrt: " + String(IMUsensor.accelSqrt()));
+  Serial.println("\t");
 }
 
 void IMU_sensor_show::mag_show(){
-  Serial.print("magX: " + String(mySensor.magX()));
-  Serial.print("/t");
-  Serial.print("magY: " + String(mySensor.magY()));
-  Serial.print("/t");  
-  Serial.print("magZ: " + String(mySensor.magZ()));
-  Serial.print("/t");
-  Serial.println("accelSqrt: " + String(mySensor.magHorizDirection()));
-
+  IMUsensor.magUpdate();
+  Serial.print("magX: " + String(IMUsensor.magX()));
+  Serial.print("\t");
+  Serial.print("magY: " + String(IMUsensor.magY()));
+  Serial.print("\t");  
+  Serial.print("magZ: " + String(IMUsensor.magZ()));
+  Serial.print("\t");
+  Serial.println("accelSqrt: " + String(IMUsensor.magHorizDirection()));
 }
+*/
 
 //Motor Speed Input Method
 void Move_show::speed_status() {

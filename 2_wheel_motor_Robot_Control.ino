@@ -1,4 +1,7 @@
-#include "MPU9250_asukiaaa.h" //IMUsensor library
+#include <MPU9250_asukiaaa.h> //IMUsensor library
+#include <Wire.h> //I2C Communication
+//#include <WiFi.h>
+//#include <WiFiUdp.h>
 #include "Motor_move.h"
 
 #define CONTROL_PERIOD 50000 //50ms
@@ -15,8 +18,10 @@
 #define motorB2 5
 
 //IMU PIN number setting
+#ifdef _ESP32_HAL_I2C_H_
 #define SDA_PIN 21
 #define SCL_PIN 22
+#endif
 
 //PWM Channel Setting
 #define LEDC_TIMER_13_BIT 13        //13bit,   2^13-1 = calculate duty 8191
@@ -27,6 +32,9 @@ InterruptLibrary encoder_RA;
 InterruptLibrary encoder_RB;
 InterruptLibrary encoder_LA;
 InterruptLibrary encoder_LB;
+
+//MPU9250_asukiaaa IMUsensor;
+MPU9250_asukiaaa IMUsensor;
 
 //Setup method
 void setup() {
@@ -59,30 +67,55 @@ void setup() {
   ledcAttachPin(motorA1, 3);
   
   timer_1.interrupt_setup();      //Timer Interrupt
-
-  //IMUsensor setting
-  #ifdef _ESP32_HAL_I2C_H_
-  Wire.begin(SDA_PIN, SCL_PIN);
-  #else
-  Wire.begin();
+  //MPU9250_asukiaaa IMUsensor;
+  //IMUsensor setting(I2C 통신)
+  #ifdef _ESP32_HAL_I2C_H_  //'_ESP32_HAL_I2C_H_'가 정의되어 있으면 실행
+    Wire.begin(SDA_PIN, SCL_PIN);
+  #else                     //'_ESP32_HAL_I2C_H_'가 정의 되어 있지 않으면 실행
+    Wire.begin();
   #endif
+
+  IMUsensor.setWire(&Wire);
+
+  IMUsensor.beginAccel();
+  IMUsensor.beginMag();
+
+  //Offset setting error value
+  IMUsensor.magXOffset = 66;
+  IMUsensor.magYOffset = 18;
+  IMUsensor.magZOffset = 41; 
+  //Serial Print Start
   Serial.begin(74880);
 }
 
 void loop() {
+  //Motor Control 부분
   Move_show show1;
   Move_show motor_input;
 
-  MPU9250_asukiaaa mySensor;  //IMUsensor setting
-  IMU_sensor_show mySensor2;
-
+  //motor_input.speed_status();
+  //show1.motor_show_status();
+ 
   //IMU 센서 받아오는 여기 부분 수정 필요
-  //mySensor.accelUpdate();
-  //mySensor2.accel_show();
-  //mySensor.magUpdate();
-  //mySensor2.mag_show();
-  motor_input.speed_status();
-  show1.motor_show_status();
+  /*
+  IMUsensor.accelUpdate();
+  Serial.print("accelX: " + String(IMUsensor.accelX()));
+  Serial.print("\t");
+  Serial.print("accelY: " + String(IMUsensor.accelY()));
+  Serial.print("\t");  
+  Serial.print("accelZ: " + String(IMUsensor.accelZ()));
+  Serial.print("\t");
+  Serial.print("accelSqrt: " + String(IMUsensor.accelSqrt()));
+  Serial.println("\t");
+  */
+  IMUsensor.magUpdate();
+  Serial.print("magX: " + String(IMUsensor.magX()));
+  Serial.print("\t");
+  Serial.print("magY: " + String(IMUsensor.magY()));
+  Serial.print("\t");  
+  Serial.print("magZ: " + String(IMUsensor.magZ()));
+  Serial.print("\t");
+  Serial.println("accelSqrt: " + String(IMUsensor.magHorizDirection()));
   
  
 }
